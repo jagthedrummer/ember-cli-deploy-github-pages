@@ -12,9 +12,11 @@ var stubProject = {
 };
 
 var mockCreateTag = function(tag, cb) { cb(); }
+var mockGetBranches = function(cb) { cb(); }
 var mockGit = function() {
   return {
-    createTag: mockCreateTag
+    createTag: mockCreateTag,
+    getBranches: mockGetBranches
   };
 };
 
@@ -101,15 +103,15 @@ describe('plugin', function() {
       });
     });
 
-    describe('resolving revisionKey from the pipeline', function() {
+    describe('resolving branch info from the pipeline', function() {
       it('uses the config data if it already exists', function() {
         var plugin = subject.createDeployPlugin({
           name: 'gh-deploy'
         });
 
         var config = {
-          deployTag: 'some-tag',
-          revisionKey: '12345'
+          sourceBranch: 'some-tag',
+          targetBranch: '12345'
         };
         var context = {
           ui: mockUi,
@@ -119,16 +121,133 @@ describe('plugin', function() {
           },
           commandOptions: {},
           revisionData: {
-            revisionKey: 'something-else'
+            targetBranch: 'something-else'
           }
         };
 
         plugin.beforeHook(context);
         plugin.configure(context);
-        assert.equal(plugin.readConfig('revisionKey'), '12345');
-        assert.equal(plugin.readConfig('deployTag'), 'some-tag');
+        assert.equal(plugin.readConfig('targetBranch'), '12345');
+        assert.equal(plugin.readConfig('sourceBranch'), 'some-tag');
       });
 
+    });
+
+    describe('willDeploy hook', function() {
+      it('passes if required branches exist', function() {
+        var plugin = subject.createDeployPlugin({
+          name: 'gh-deploy'
+        });
+
+        mockGetBranches = function(cb) {
+          var branches = ['master','gh-pages'];
+          cb(null, branches);
+        };
+
+        var context = {
+          ui: mockUi,
+          project: stubProject,
+          config: {
+            "gh-deploy": {},
+          },
+          _Git: mockGit,
+          deployTarget: "development",
+          commandOptions: { }
+        };
+
+        plugin.beforeHook(context);
+        plugin.configure(context);
+
+        return assert.isFulfilled(plugin.willDeploy(context))
+          .then(function() {
+            var messages = mockUi.messages.reduce(function(previous, current) {
+              if (/- Missing branch:\s.*:\s/.test(current)) {
+                previous.push(current);
+              }
+
+              return previous;
+            }, []);
+            assert.equal(messages.length, 0);
+            //assert.equal(taggedWith, "deploy-development-123abc")
+          })
+
+      });
+
+      it('fails if required branches do not exist', function() {
+        var plugin = subject.createDeployPlugin({
+          name: 'gh-deploy'
+        });
+
+        mockGetBranches = function(cb) {
+          var branches = ['not-master','not-gh-pages'];
+          cb(null, branches);
+        };
+
+        var context = {
+          ui: mockUi,
+          project: stubProject,
+          config: {
+            "gh-deploy": {},
+          },
+          _Git: mockGit,
+          deployTarget: "development",
+          commandOptions: { }
+        };
+
+        plugin.beforeHook(context);
+        plugin.configure(context);
+
+        return assert.isFulfilled(plugin.willDeploy(context))
+          .then(function() {
+            var messages = mockUi.messages.reduce(function(previous, current) {
+              if (/- Missing branch:\s.*:\s/.test(current)) {
+                previous.push(current);
+              }
+
+              return previous;
+            }, []);
+            assert.equal(messages.length, 2);
+            //assert.equal(taggedWith, "deploy-development-123abc")
+          })
+
+      });
+    });
+
+    describe('deploy hook', function() {
+      it('does some things', function() {
+        var plugin = subject.createDeployPlugin({
+          name: 'gh-deploy'
+        });
+
+        var taggedWith;
+        mockCreateTag = function(tag, cb) {
+          taggedWith = tag;
+          cb();
+        };
+
+        var config = {
+          revisionKey: '123abc'
+        };
+
+        var context = {
+          ui: mockUi,
+          project: stubProject,
+          config: {
+            "gh-deploy": config,
+          },
+          _Git: mockGit,
+          deployTarget: "development",
+          commandOptions: { }
+        };
+
+        plugin.beforeHook(context);
+        plugin.configure(context);
+
+        return assert.isFulfilled(plugin.deploy(context))
+          .then(function() {
+            assert.equal(taggedWith, "deploy-development-123abc")
+          })
+      });
     });
 
   });

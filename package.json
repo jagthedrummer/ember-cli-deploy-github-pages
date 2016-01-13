@@ -47,7 +47,8 @@
   ],
   "dependencies": {
     "ember-cli-babel": "^5.1.5",
-    "ember-cli-deploy-plugin": "^0.2.0"
+    "ember-cli-deploy-plugin": "^0.2.0",
+    "gitty": "^3.3.2"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
