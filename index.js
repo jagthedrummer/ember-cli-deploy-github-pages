@@ -30,7 +30,25 @@ module.exports = {
               plugin.log(error,{color: 'red'});
             }else{
               console.log(branches);
-              return resolve();
+              var targetBranch = plugin.readConfig('targetBranch');
+              var sourceBranch = plugin.readConfig('sourceBranch');
+              console.log('branches: ', targetBranch, sourceBranch);
+              var sourceBranchExists = branches.indexOf(sourceBranch) >= 0;
+              var targetBranchExists = branches.indexOf(targetBranch) >= 0;
+              console.log('booleans', sourceBranchExists, targetBranchExists);
+              if(!sourceBranchExists){
+                plugin.log("Missing branch " + sourceBranch);
+                console.log("Missing branch " + sourceBranch);
+              }
+              if(!targetBranchExists){
+                plugin.log("Missing branch " + targetBranch);
+                console.log("Missing branch " + targetBranch);
+              }
+              if(sourceBranchExists && targetBranchExists){
+                return resolve();
+              }else{
+                return reject();
+              }
             }
           });
         });

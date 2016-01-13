@@ -161,7 +161,7 @@ describe('plugin', function() {
         return assert.isFulfilled(plugin.willDeploy(context))
           .then(function() {
             var messages = mockUi.messages.reduce(function(previous, current) {
-              if (/- Missing branch:\s.*:\s/.test(current)) {
+              if (/- Missing branch\s.*/.test(current)) {
                 previous.push(current);
               }
 
@@ -197,10 +197,11 @@ describe('plugin', function() {
         plugin.beforeHook(context);
         plugin.configure(context);
 
-        return assert.isFulfilled(plugin.willDeploy(context))
+        return assert.isRejected(plugin.willDeploy(context))
           .then(function() {
+            console.log(mockUi.messages);
             var messages = mockUi.messages.reduce(function(previous, current) {
-              if (/- Missing branch:\s.*:\s/.test(current)) {
+              if (/- Missing branch\s.*/.test(current)) {
                 previous.push(current);
               }
 
