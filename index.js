@@ -10,15 +10,12 @@ module.exports = {
     var DeployPlugin = BasePlugin.extend({
       name: options.name,
 
-      didBuild: function(context) {
-        //do something amazing here once the project has been built
+      defaultConfig: {
+        sourceBranch: 'master',
+        targetBranch: 'gh-pages'
       },
 
-      upload: function(context) {
-        //do something here to actually deploy your app somewhere
-      },
-
-      didDeploy: function(context) {
+      deploy: function(context) {
         //do something here like notify your team on slack
       }
     });

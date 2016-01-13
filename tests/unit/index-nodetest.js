@@ -18,7 +18,7 @@ var mockGit = function() {
   };
 };
 
-describe('redis plugin', function() {
+describe('plugin', function() {
   var subject, mockUi;
 
   beforeEach(function() {
@@ -45,22 +45,22 @@ describe('redis plugin', function() {
     var plugin = subject.createDeployPlugin({
       name: 'test-plugin'
     });
-    assert.ok(plugin.didDeploy);
+    assert.ok(plugin.deploy, 'implements the deploy hook');
   });
 
   describe('configure hook', function() {
     it('runs without error if config is ok', function() {
       var plugin = subject.createDeployPlugin({
-        name: 'tag-git'
+        name: 'gh-deploy'
       });
 
       var context = {
         ui: mockUi,
         project: stubProject,
         config: {
-          "tag-git": {
-            app: 'some-app',
-            token: 'super-secret-token'
+          "gh-deploy": {
+            sourceBranch: 'master',
+            targetBranch: 'gh-pages'
           }
         }
       };
@@ -69,10 +69,42 @@ describe('redis plugin', function() {
       assert.ok(true); // didn't throw an error
     });
 
+    describe('without providing config', function () {
+      var config, plugin, context;
+      beforeEach(function() {
+        config = { };
+        plugin = subject.createDeployPlugin({
+          name: 'gh-deploy'
+        });
+        context = {
+          ui: mockUi,
+          project: stubProject,
+          config: config
+        };
+        plugin.beforeHook(context);
+      });
+      it('warns about missing optional config', function() {
+        plugin.configure(context);
+        var messages = mockUi.messages.reduce(function(previous, current) {
+          if (/- Missing config:\s.*, using default:\s/.test(current)) {
+            previous.push(current);
+          }
+
+          return previous;
+        }, []);
+        assert.equal(messages.length, 2);
+      });
+      it('adds default config to the config object', function() {
+        plugin.configure(context);
+        assert.isDefined(config["gh-deploy"].sourceBranch);
+        assert.isDefined(config["gh-deploy"].targetBranch);
+      });
+    });
+
     describe('resolving revisionKey from the pipeline', function() {
       it('uses the config data if it already exists', function() {
         var plugin = subject.createDeployPlugin({
-          name: 'tag-git'
+          name: 'gh-deploy'
         });
 
         var config = {
@@ -83,7 +115,7 @@ describe('redis plugin', function() {
           ui: mockUi,
           project: stubProject,
           config: {
-            "tag-git": config
+            "gh-deploy": config
           },
           commandOptions: {},
           revisionData: {
