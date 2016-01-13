@@ -2,6 +2,8 @@
 
 > An ember-cli-deploy plugin to deploy to github pages.
 
+*Please Note:* This is a work in progress and has not been published to
+npm yet.
 
 ## What is an ember-cli-deploy plugin?
 
@@ -37,6 +39,7 @@ ember install ember-cli-deploy-github-pages
 
 For detailed information on what plugin hooks are and how they work, please refer to the [Plugin Documentation][1].
 
+- `willDeploy`
 - `deploy`
 
 ## Configuration Options
@@ -51,11 +54,6 @@ For detailed information on how configuration of plugins works, please refer to 
 [2]: https://github.com/ember-cli-deploy/ember-cli-deploy-build "ember-cli-deploy-build"
 [3]: https://github.com/ember-cli/ember-cli-deploy "ember-cli-deploy"
 [4]: https://github.com/ember-cli-deploy/ember-cli-deploy-revision-data "ember-cli-deploy-revision-data"
-
-
-## Running Tests
-
-* `npm test`
 
 
 For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
