@@ -1,26 +1,61 @@
-# Ember-cli-deploy-github-pages
+# ember-cli-deploy-github-pages
 
-This README outlines the details of collaborating on this Ember addon.
+> An ember-cli-deploy plugin to deploy to github pages.
+
+
+## What is an ember-cli-deploy plugin?
+
+A plugin is an addon that can be executed as a part of the ember-cli-deploy pipeline. A plugin will implement one or more of the ember-cli-deploy's pipeline hooks.
+
+For more information on what plugins are and how they work, please refer to the [Plugin Documentation][1].
+
+## Quick Start
+To get up and running quickly, do the following:
+
+- Ensure [ember-cli-deploy-build][2] is installed and configured.
+
+- Install this plugin
+
+```bash
+$ ember install ember-cli-deploy-github-pages
+```
+
+- Run the pipeline
+
+```bash
+$ ember deploy
+```
 
 ## Installation
+Run the following command in your terminal:
 
-* `git clone` this repository
-* `npm install`
-* `bower install`
+```bash
+ember install ember-cli-deploy-github-pages
+```
 
-## Running
+## ember-cli-deploy Hooks Implemented
 
-* `ember server`
-* Visit your app at http://localhost:4200.
+For detailed information on what plugin hooks are and how they work, please refer to the [Plugin Documentation][1].
+
+- `deploy`
+
+## Configuration Options
+
+For detailed information on how configuration of plugins works, please refer to the [Plugin Documentation][1].
 
 ## Running Tests
 
-* `npm test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
+- `npm test`
 
-## Building
+[1]: http://ember-cli.github.io/ember-cli-deploy/plugins "Plugin Documentation"
+[2]: https://github.com/ember-cli-deploy/ember-cli-deploy-build "ember-cli-deploy-build"
+[3]: https://github.com/ember-cli/ember-cli-deploy "ember-cli-deploy"
+[4]: https://github.com/ember-cli-deploy/ember-cli-deploy-revision-data "ember-cli-deploy-revision-data"
 
-* `ember build`
+
+## Running Tests
+
+* `npm test`
+
 
 For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
