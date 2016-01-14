@@ -74,7 +74,11 @@ module.exports = {
       },
 
       upload: function(context) {
+        var repo  = (context._Git || gitty)(".");
+        var targetBranch = this.readConfig('targetBranch');
+        var remote = this.readConfig('remote');
 
+        repo.push(remote, targetBranch);
       },
 
       didUpload: function(context) {

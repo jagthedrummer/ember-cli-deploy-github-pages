@@ -23,7 +23,8 @@ var mockGit = function() {
     getBranches: mockGetBranches,
     checkoutSync: mockCheckout,
     addSync: mockAdd,
-    commitSync: mockCommit
+    commitSync: mockCommit,
+    push: mockPush
   };
 };
 
@@ -214,7 +215,19 @@ describe('plugin', function() {
 
   describe('upload hook', function() {
     it('pushes to the remote', function() {
+      var pushedRemote, pushedBranch;
+      mockPush = function(remote, branch){
+        pushedRemote = remote;
+        pushedBranch = branch;
+      };
       
+      plugin.beforeHook(context);
+      plugin.configure(context);
+
+      plugin.upload(context);
+
+      assert.equal(pushedRemote, "origin");
+      assert.equal(pushedBranch, "gh-pages");
     });
   });
 
