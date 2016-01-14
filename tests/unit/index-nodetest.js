@@ -13,16 +13,19 @@ var stubProject = {
 
 var mockCreateTag = function(tag, cb) { cb(); }
 var mockCheckout = function(branch) { }
+var mockAdd = function(files) { }
 var mockPush = function(remote, branch, cb) { cb(); }
 var mockGetBranches = function(cb) { cb(); }
+var mockCommit = function(message) {}
 var mockGit = function() {
   return {
     createTag: mockCreateTag,
     getBranches: mockGetBranches,
-    checkoutSync: mockCheckout
+    checkoutSync: mockCheckout,
+    addSync: mockAdd,
+    commitSync: mockCommit
   };
 };
-
 
 describe('plugin', function() {
   var subject, mockUi, context, plugin;
@@ -46,7 +49,8 @@ describe('plugin', function() {
           sourceBranch: 'master',
           targetBranch: 'gh-pages'
         }
-      }
+      },
+      distDir: 'tmp/deploy-dist'
     };
     plugin = subject.createDeployPlugin({
       name: 'gh-deploy'
@@ -65,7 +69,10 @@ describe('plugin', function() {
     var plugin = subject.createDeployPlugin({
       name: 'test-plugin'
     });
-    assert.ok(plugin.deploy, 'implements the deploy hook');
+    assert.ok(plugin.willDeploy, 'implements the willDeploy hook');
+    assert.ok(plugin.prepare, 'implements the prepare hook');
+    assert.ok(plugin.upload, 'implements the upload hook');
+    assert.ok(plugin.didUpload, 'implements the didUpload hook');
   });
 
   describe('configure hook', function() {
@@ -151,7 +158,6 @@ describe('plugin', function() {
 
       return assert.isRejected(plugin.willDeploy(context))
         .then(function() {
-          console.log(mockUi.messages);
           var messages = mockUi.messages.reduce(function(previous, current) {
             if (/- Missing branch\s.*/.test(current)) {
               previous.push(current);
@@ -172,12 +178,37 @@ describe('plugin', function() {
         checkedOutBranch = branch;
       };
 
+      var addedFiles;
+      mockAdd = function(files){
+        addedFiles = files;
+      };
+
+      var copiedFrom, copiedTo;
+      var mockFs = {
+        copySync: function(from, to){
+          copiedFrom = from;
+          copiedTo = to;
+        }
+      };
+
+      var commitMessage;
+      mockCommit = function(message){
+        commitMessage = message;
+      }
+
+
+      context._Fs = mockFs;
+
       plugin.beforeHook(context);
       plugin.configure(context);
 
       plugin.prepare(context);
 
       assert.equal(checkedOutBranch, "gh-pages");
+      assert.equal(copiedFrom,'tmp/deploy-dist');
+      assert.equal(copiedTo,'.');
+      assert.equal(addedFiles[0], ".");
+      assert.ok(commitMessage);
     });
   });
 

@@ -5,6 +5,7 @@ var BasePlugin = require('ember-cli-deploy-plugin');
 // TBD : Remove exec when we're not using it amy more. Don't forget to remove it from package.json
 var exec = require('child_process').exec;
 var gitty = require("gitty");
+var fs = require('fs-extra');
 
 function hasBranchInRepo(branchName, branchData){
   return branchData.current === branchName || branchData.others.indexOf(branchName) >= 0;
@@ -54,29 +55,26 @@ module.exports = {
       },
 
       prepare: function(context) {
-        console.log("starting prepare");
-        console.log(context);
 
         var plugin = this;
         var repo  = (context._Git || gitty)(".");
+        var fs = context._Fs || fs;
         var targetBranch = this.readConfig('targetBranch');
         var remote = this.readConfig('remote');
         var distDir = context.distDir;
-        console.log("branch: ", targetBranch, " remote: ", remote);
 
         repo.checkoutSync(targetBranch);
 
-        //copy
+        fs.copySync(distDir,'.')
 
-        //git add
+        repo.addSync(['.']);
 
+        repo.commitSync('deploying with ember-cli-deploy-github-pages');
         //git commit
-
-        return {};
       },
 
       upload: function(context) {
-      
+
       },
 
       didUpload: function(context) {
