@@ -6,6 +6,10 @@ var BasePlugin = require('ember-cli-deploy-plugin');
 var exec = require('child_process').exec;
 var gitty = require("gitty");
 
+function hasBranchInRepo(branchName, branchData){
+  return branchData.current === branchName || branchData.others.indexOf(branchName) >= 0;
+}
+
 module.exports = {
   name: 'ember-cli-deploy-github-pages',
 
@@ -19,35 +23,29 @@ module.exports = {
       },
 
       willDeploy: function(context){
-        console.log('calling willDeploy');
         // here we should check to make sure all of the branches we need exist
         var repo  = (context._Git || gitty)(".");
         var plugin = this;
         return new Promise(function(resolve, reject) {
           repo.getBranches(function(error, branches){
             if(error){
-              console.log(error);
               plugin.log(error,{color: 'red'});
+              return reject(error);
             }else{
-              console.log(branches);
               var targetBranch = plugin.readConfig('targetBranch');
               var sourceBranch = plugin.readConfig('sourceBranch');
-              console.log('branches: ', targetBranch, sourceBranch);
-              var sourceBranchExists = branches.indexOf(sourceBranch) >= 0;
-              var targetBranchExists = branches.indexOf(targetBranch) >= 0;
-              console.log('booleans', sourceBranchExists, targetBranchExists);
+              var sourceBranchExists = hasBranchInRepo(sourceBranch,branches);
+              var targetBranchExists = hasBranchInRepo(targetBranch,branches)
               if(!sourceBranchExists){
-                plugin.log("Missing branch " + sourceBranch);
-                console.log("Missing branch " + sourceBranch);
+                plugin.log("Missing branch " + sourceBranch, {color:'red'});
               }
               if(!targetBranchExists){
-                plugin.log("Missing branch " + targetBranch);
-                console.log("Missing branch " + targetBranch);
+                plugin.log("Missing branch " + targetBranch, {color:'red'});
               }
               if(sourceBranchExists && targetBranchExists){
                 return resolve();
               }else{
-                return reject();
+                return reject("One or more branches are missing");
               }
             }
           });

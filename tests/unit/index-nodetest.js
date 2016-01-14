@@ -140,7 +140,7 @@ describe('plugin', function() {
         });
 
         mockGetBranches = function(cb) {
-          var branches = ['master','gh-pages'];
+          var branches = { current: 'master', others: ['gh-pages'] }
           cb(null, branches);
         };
 
@@ -179,7 +179,7 @@ describe('plugin', function() {
         });
 
         mockGetBranches = function(cb) {
-          var branches = ['not-master','not-gh-pages'];
+          var branches = { current: 'not-master', others: [] };
           cb(null, branches);
         };
 
