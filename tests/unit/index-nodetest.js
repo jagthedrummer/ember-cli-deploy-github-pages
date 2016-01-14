@@ -76,17 +76,8 @@ describe('plugin', function() {
     });
 
     describe('without providing config', function () {
-      var config, plugin, context;
       beforeEach(function() {
-        config = { };
-        plugin = subject.createDeployPlugin({
-          name: 'gh-deploy'
-        });
-        context = {
-          ui: mockUi,
-          project: stubProject,
-          config: config
-        };
+        context.config["gh-deploy"] = {}
         plugin.beforeHook(context);
       });
       it('warns about missing optional config', function() {
@@ -102,8 +93,8 @@ describe('plugin', function() {
       });
       it('adds default config to the config object', function() {
         plugin.configure(context);
-        assert.isDefined(config["gh-deploy"].sourceBranch);
-        assert.isDefined(config["gh-deploy"].targetBranch);
+        assert.isDefined(context.config["gh-deploy"].sourceBranch);
+        assert.isDefined(context.config["gh-deploy"].targetBranch);
       });
     });
 
