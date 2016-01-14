@@ -19,7 +19,8 @@ module.exports = {
 
       defaultConfig: {
         sourceBranch: 'master',
-        targetBranch: 'gh-pages'
+        targetBranch: 'gh-pages',
+        remote: 'origin'
       },
 
       willDeploy: function(context){
@@ -50,6 +51,39 @@ module.exports = {
             }
           });
         });
+      },
+
+      prepare: function(context) {
+        console.log("starting prepare");
+        console.log(context);
+
+        var plugin = this;
+        var repo  = (context._Git || gitty)(".");
+        var targetBranch = this.readConfig('targetBranch');
+        var remote = this.readConfig('remote');
+        var distDir = context.distDir;
+        console.log("branch: ", targetBranch, " remote: ", remote);
+
+        repo.checkoutSync(targetBranch);
+
+        //copy
+
+        //git add
+
+        //git commit
+
+        return {};
+      },
+
+      upload: function(context) {
+      
+      },
+
+      didUpload: function(context) {
+        var repo  = (context._Git || gitty)(".");
+        var sourceBranch = this.readConfig('sourceBranch');
+        repo.checkoutSync(sourceBranch);
+        return {};
       },
 
       deploy: function(context) {
