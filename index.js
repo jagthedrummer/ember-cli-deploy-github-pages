@@ -6,6 +6,7 @@ var BasePlugin = require('ember-cli-deploy-plugin');
 var exec = require('child_process').exec;
 var gitty = require("gitty");
 var fse = require('fs-extra')
+var GitUrlParse = require("git-url-parse");
 
 function hasBranchInRepo(branchName, branchData){
   return branchData.current === branchName || branchData.others.indexOf(branchName) >= 0;
@@ -90,6 +91,14 @@ module.exports = {
       didUpload: function(context) {
         var repo  = (context._Git || gitty)(".");
         var sourceBranch = this.readConfig('sourceBranch');
+
+        var remotes = repo.getRemotesSync();
+        if (remotes.origin) {
+          var parsedRemote = GitUrlParse(remotes.origin);
+          this.log('You\'re Live: http://' + parsedRemote.owner + '.github.io/' + parsedRemote.name, { color: 'blue' });
+        }
+        this.log('Feel free to customize the URL in the config //TODO');
+
         repo.checkoutSync(sourceBranch);
         return {};
       },
