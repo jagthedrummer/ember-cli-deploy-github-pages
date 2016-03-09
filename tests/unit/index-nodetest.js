@@ -185,7 +185,7 @@ describe('plugin', function() {
       };
 
       var copiedFrom, copiedTo;
-      var mockFs = {
+      var mockFse = {
         copySync: function(from, to){
           copiedFrom = from;
           copiedTo = to;
@@ -198,7 +198,7 @@ describe('plugin', function() {
       }
 
 
-      context._Fs = mockFs;
+      context._Fse = mockFse;
 
       plugin.beforeHook(context);
       plugin.configure(context);
@@ -220,7 +220,7 @@ describe('plugin', function() {
         pushedRemote = remote;
         pushedBranch = branch;
       };
-      
+
       plugin.beforeHook(context);
       plugin.configure(context);
 

@@ -62,14 +62,14 @@ module.exports = {
 
         var plugin = this;
         var repo  = (context._Git || gitty)(".");
-        var fs = context._Fs || fse;
+        var fse = context._Fse || fse;
         var targetBranch = this.readConfig('targetBranch');
         var remote = this.readConfig('remote');
         var distDir = context.distDir;
 
         repo.checkoutSync(targetBranch);
 
-        fs.copySync(distDir,'.',{clobber:true})
+        fse.copySync(distDir,'.',{clobber:true})
 
         repo.addSync(['.']);
 
