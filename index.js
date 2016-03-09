@@ -45,7 +45,7 @@ module.exports = {
               }
               if(!targetBranchExists){
                 var message = "Target branch is missing. You have configured it as: " + targetBranch + " ";
-                message += "For help on creating a branch for deployment please see https://help.github.com/articles/creating-project-pages-manually/";
+                message += "For help on creating a branch for deployment please see https://github.com/jagthedrummer/ember-cli-deploy-github-pages/wiki/Creating-your-gh-pages-branch";
                 plugin.log(message, {color:'red'});
               }
               if(sourceBranchExists && targetBranchExists){
