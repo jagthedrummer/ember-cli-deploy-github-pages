@@ -35,6 +35,25 @@ Run the following command in your terminal:
 ember install ember-cli-deploy-github-pages
 ```
 
+### Adjusting the Asset URL for Project Pages
+
+If you are deploying this as [ project pages ](https://help.github.com/articles/user-organization-and-project-pages/) (`e.g.
+johnnycoder.github.io/my-cool-project`) you'll need to update your `baseURL` to
+serve your assets from the correct folder after deploy.
+
+```javascript
+// config/environment.js
+
+if (environment === 'production') {
+  ENV.baseURL = '/my-cool-project'; // make sure to use the actual name of your
+  project
+}
+```
+
+_Note:_ If you are deploying as an organization page, user page, or using a
+CNAME to serve from a root domain (e.g. `johnnycoders-super-cool-project.com`),
+then you do not need to modify the root URL.
+
 ## ember-cli-deploy Hooks Implemented
 
 For detailed information on what plugin hooks are and how they work, please refer to the [Plugin Documentation][1].
