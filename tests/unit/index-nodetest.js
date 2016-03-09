@@ -160,7 +160,7 @@ describe('plugin', function() {
       return assert.isRejected(plugin.willDeploy(context))
         .then(function() {
           var messages = mockUi.messages.reduce(function(previous, current) {
-            if (/- Missing branch\s.*/.test(current)) {
+            if (/.*branch is missing.*/.test(current)) {
               previous.push(current);
             }
 

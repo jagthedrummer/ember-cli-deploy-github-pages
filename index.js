@@ -39,10 +39,14 @@ module.exports = {
               var sourceBranchExists = hasBranchInRepo(sourceBranch,branches);
               var targetBranchExists = hasBranchInRepo(targetBranch,branches)
               if(!sourceBranchExists){
-                plugin.log("Missing branch " + sourceBranch, {color:'red'});
+                var message = "Source branch is missing. You have configured it as: " + sourceBranch + " ";
+                message += "Please make sure that your configuration points to a branch that already exists, and that contains your project source."
+                plugin.log(message, {color:'red'});
               }
               if(!targetBranchExists){
-                plugin.log("Missing branch " + targetBranch, {color:'red'});
+                var message = "Target branch is missing. You have configured it as: " + targetBranch + " ";
+                message += "For help on creating a branch for deployment please see https://help.github.com/articles/creating-project-pages-manually/";
+                plugin.log(message, {color:'red'});
               }
               if(sourceBranchExists && targetBranchExists){
                 return resolve();
