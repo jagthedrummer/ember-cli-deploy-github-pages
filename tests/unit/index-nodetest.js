@@ -185,10 +185,28 @@ describe('plugin', function() {
       };
 
       var copiedFrom, copiedTo;
+      var removed = [];
       var mockFse = {
         copySync: function(from, to){
           copiedFrom = from;
           copiedTo = to;
+        },
+        removeSync: function(path){
+          console.log('pushing path!',path);
+          removed.push(path);
+        }
+      };
+
+      var mockFs = {
+        readdirSync: function(path){
+          return [
+            '.git',
+            'bower.json',
+            'package.json',
+            'node_modules',
+            'bower_components',
+            'tmp'
+          ];
         }
       };
 
@@ -199,6 +217,7 @@ describe('plugin', function() {
 
 
       context._Fse = mockFse;
+      context._Fs  = mockFs;
 
       plugin.beforeHook(context);
       plugin.configure(context);
@@ -209,6 +228,12 @@ describe('plugin', function() {
       assert.equal(copiedFrom,'tmp/deploy-dist');
       assert.equal(copiedTo,'.');
       assert.equal(addedFiles[0], ".");
+      assert.ok(removed.indexOf('bower.json') >= 0);
+      assert.ok(removed.indexOf('package.json') >= 0);
+      assert.ok(removed.indexOf('.git') < 0);
+      assert.ok(removed.indexOf('tmp') < 0);
+      assert.ok(removed.indexOf('bower_components') < 0);
+      assert.ok(removed.indexOf('node_modules') < 0);
       assert.ok(commitMessage);
     });
   });
