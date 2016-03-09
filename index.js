@@ -39,10 +39,14 @@ module.exports = {
               var sourceBranchExists = hasBranchInRepo(sourceBranch,branches);
               var targetBranchExists = hasBranchInRepo(targetBranch,branches)
               if(!sourceBranchExists){
-                plugin.log("Missing branch " + sourceBranch, {color:'red'});
+                var message = "Source branch is missing. You have configured it as: " + sourceBranch + " ";
+                message += "Please make sure that your configuration points to a branch that already exists, and that contains your project source."
+                plugin.log(message, {color:'red'});
               }
               if(!targetBranchExists){
-                plugin.log("Missing branch " + targetBranch, {color:'red'});
+                var message = "Target branch is missing. You have configured it as: " + targetBranch + " ";
+                message += "For help on creating a branch for deployment please see https://github.com/jagthedrummer/ember-cli-deploy-github-pages/wiki/Creating-your-gh-pages-branch";
+                plugin.log(message, {color:'red'});
               }
               if(sourceBranchExists && targetBranchExists){
                 return resolve();
