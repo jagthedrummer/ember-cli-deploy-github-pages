@@ -78,7 +78,7 @@ module.exports = {
         repo.checkoutSync(targetBranch);
 
         var topLevelFiles = fs.readdirSync('.');
-        var filesToSkip = ['.git','bower_components','node_modules','tmp'];
+        var filesToSkip = ['.git','.gitignore','bower_components','node_modules','tmp'];
         for(var i = 0; i < topLevelFiles.length; i++){
           var topLevelFile = topLevelFiles[i];
           if(filesToSkip.indexOf(topLevelFile) < 0){
