@@ -8,8 +8,6 @@ var gitty = require("gitty");
 var filesystem_extra = require('fs-extra');
 var filesystem = require('fs');
 
-console.log("setting up fs!!!!!!!!!",filesystem);
-
 function hasBranchInRepo(branchName, branchData){
   return branchData.current === branchName || branchData.others.indexOf(branchName) >= 0;
 }
@@ -63,8 +61,6 @@ module.exports = {
 
       prepare: function(context) {
 
-        console.log("setting up fs!!!!!!!!!",filesystem);
-
         var plugin = this;
         var repo  = (context._Git || gitty)(".");
         var fse = context._Fse || filesystem_extra;
@@ -73,8 +69,6 @@ module.exports = {
         var remote = this.readConfig('remote');
         var distDir = context.distDir;
 
-        console.log("setting up fs!!!!!!!!!",filesystem);
-
         repo.checkoutSync(targetBranch);
 
         var topLevelFiles = fs.readdirSync('.');
@@ -82,11 +76,7 @@ module.exports = {
         for(var i = 0; i < topLevelFiles.length; i++){
           var topLevelFile = topLevelFiles[i];
           if(filesToSkip.indexOf(topLevelFile) < 0){
-            console.log('removing',topLevelFile);
             fse.removeSync(topLevelFile);
-
-          }else{
-            console.log('skipping', topLevelFile);
           }
         }
 
@@ -168,7 +158,6 @@ function runCommand(/* child_process.exec args */) {
     args.splice(lastIndex);
   }
 
-  console.log('calling runCommand, which should be replaced');
   return new Promise(function(resolve, reject) {
     return resolve();
     //var cb = function(err, stdout, stderr) {
