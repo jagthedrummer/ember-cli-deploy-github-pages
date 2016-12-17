@@ -5,7 +5,8 @@ var BasePlugin = require('ember-cli-deploy-plugin');
 // TBD : Remove exec when we're not using it amy more. Don't forget to remove it from package.json
 var exec = require('child_process').exec;
 var gitty = require("gitty");
-var fse = require('fs-extra')
+var filesystem_extra = require('fs-extra');
+var filesystem = require('fs');
 
 function hasBranchInRepo(branchName, branchData){
   return branchData.current === branchName || branchData.others.indexOf(branchName) >= 0;
@@ -62,14 +63,24 @@ module.exports = {
 
         var plugin = this;
         var repo  = (context._Git || gitty)(".");
-        var fs = context._Fs || fse;
+        var fse = context._Fse || filesystem_extra;
+        var fs = context._Fs || filesystem;
         var targetBranch = this.readConfig('targetBranch');
         var remote = this.readConfig('remote');
         var distDir = context.distDir;
 
         repo.checkoutSync(targetBranch);
 
-        fs.copySync(distDir,'.',{clobber:true})
+        var topLevelFiles = fs.readdirSync('.');
+        var filesToSkip = ['.git','.gitignore','bower_components','node_modules','tmp'];
+        for(var i = 0; i < topLevelFiles.length; i++){
+          var topLevelFile = topLevelFiles[i];
+          if(filesToSkip.indexOf(topLevelFile) < 0){
+            fse.removeSync(topLevelFile);
+          }
+        }
+
+        fse.copySync(distDir,'.',{clobber:true})
 
         repo.addSync(['.']);
 
@@ -147,7 +158,6 @@ function runCommand(/* child_process.exec args */) {
     args.splice(lastIndex);
   }
 
-  console.log('calling runCommand, which should be replaced');
   return new Promise(function(resolve, reject) {
     return resolve();
     //var cb = function(err, stdout, stderr) {
