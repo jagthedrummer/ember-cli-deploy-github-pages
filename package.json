@@ -16,8 +16,8 @@
     "node": ">= 0.10.0"
   },
   "contributors":[
-    {name: "Jeremy Green"},
-    {name: "Ryan LaBouve"}
+    {"name": "Jeremy Green"},
+    {"name": "Ryan LaBouve"}
   ],
   "license": "MIT",
   "devDependencies": {
