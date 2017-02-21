@@ -1,7 +1,7 @@
 {
   "name": "ember-cli-deploy-github-pages",
   "version": "0.0.1",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "A plugin for ember-cli-deploy that allow for deployment to github pages.",
   "directories": {
     "doc": "doc",
     "test": "tests"
@@ -20,6 +20,11 @@
     {"name": "Ryan LaBouve"}
   ],
   "license": "MIT",
+  "homepage": "https://github.com/jagthedrummer/ember-cli-deploy-github-pages",
+  "bugs": {
+    "url": "https://github.com/jagthedrummer/ember-cli-deploy-github-pages/issues"
+  },
+  "repository": "jagthedrummer/ember-cli-deploy-github-pages",
   "devDependencies": {
     "broccoli-asset-rev": "^2.2.0",
     "chai": "^3.4.1",
@@ -47,7 +52,10 @@
   },
   "keywords": [
     "ember-addon",
-    "ember-cli-deploy-plugin"
+    "ember-cli-deploy-plugin",
+    "github-pages",
+    "github pages",
+    "ghpages"
   ],
   "dependencies": {
     "ember-cli-babel": "^5.1.5",
